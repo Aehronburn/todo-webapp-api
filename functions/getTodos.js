@@ -10,27 +10,16 @@ module.exports.handler = async (event, context) => {
   //attesa connessione al db
   await connectToDB();
 
-  const json = JSON.parse(event.body);
-  console.log(json);
-
   try {
-    const todo = new Todo({
-      title: json.title,
-      date: new Date(),
-      author: json.author,
-      completed: false,
-      group: json.group,
-    });
-
-    await todo.save();
+    const todos = await Todo.find({ group: event.pathParameters.groupID });
     return {
       statusCode: 200,
-      body: "todo created successfully",
+      body: JSON.stringify(todos),
     };
   } catch (error) {
     return {
-      statusCode: 500,
-      body: "error at creating new todo",
+      statusCode: error.statusCode || 500,
+      body: "error at retrieving todos",
     };
   }
 };

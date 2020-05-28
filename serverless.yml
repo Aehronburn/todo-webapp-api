@@ -93,7 +93,7 @@ functions:
     handler: functions/getTodos.handler
     events:
       - http:
-          path: api/todos
+          path: api/todos/{groupID}
           method: get
           cors: true
   setCompleted:
