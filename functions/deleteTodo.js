@@ -1,9 +1,16 @@
 "use strict";
 
-const connectToDB = require("../db");
+const connectToDB = require("../lib/db");
+const authorize = require("../lib/authorize");
 const Todo = require("../models/Todo");
 
 module.exports.handler = async (event, context) => {
+  if (!authorize(event.headers.Authorization)) {
+    return {
+      statusCode: 401,
+      body: "Unauthenticated",
+    };
+  }
   //terminare sessione senza aspettare la chiusura del db
   context.callbackWaitsForEmptyEventLoop = false;
 

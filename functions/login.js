@@ -1,8 +1,10 @@
 "use strict";
 
-const connectToDB = require("../db");
+const jwt = require("jsonwebtoken");
+const connectToDB = require("../lib/db");
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+require("dotenv").config();
 
 module.exports.handler = async (event, context) => {
   //terminare sessione senza aspettare la chiusura del db
@@ -23,7 +25,10 @@ module.exports.handler = async (event, context) => {
     }
     //comparazione password dato dal client con quello del db
     if (await bcrypt.compare(json.password, user[0].password)) {
-      return { statusCode: 200, body: "user authenticated" };
+      const token = jwt.sign({ userID: user[0]._id }, process.env.JWT_SECRET, {
+        expiresIn: "1h",
+      });
+      return { statusCode: 200, body: JSON.stringify(token) };
     } else {
       return { statusCode: 401, body: "wrong password" };
     }

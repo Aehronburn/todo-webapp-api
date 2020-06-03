@@ -1,6 +1,6 @@
 "use strict";
 
-const connectToDB = require("../db");
+const connectToDB = require("../lib/db");
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 
@@ -30,7 +30,7 @@ module.exports.handler = async (event, context) => {
     await user.save();
     return {
       statusCode: 200,
-      body: "user successfully registered",
+      body: JSON.stringify(user),
     };
   } catch (error) {
     return {
