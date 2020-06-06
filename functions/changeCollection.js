@@ -12,23 +12,25 @@ module.exports.handler = async (event, context) => {
       body: "Unauthenticated",
     };
   }
-  //terminare sessione senza aspettare la chiusura del db
+
   context.callbackWaitsForEmptyEventLoop = false;
 
-  //attesa connessione al db
   await connectToDB();
+
+  const name = JSON.parse(event.body);
+
   try {
-    const collections = await Collection.find();
+    await Collection.findOneAndUpdate(event.pathParameters.id, name);
     return {
       statusCode: 200,
       headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify(collections),
+      body: "collection name updated successfully",
     };
   } catch (error) {
     return {
-      statusCode: 500,
+      statusCode: error.statusCode || 500,
       headers: { "Access-Control-Allow-Origin": "*" },
-      body: "error at retrieving collections",
+      body: "error at updating collection name",
     };
   }
 };

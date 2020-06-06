@@ -21,20 +21,33 @@ module.exports.handler = async (event, context) => {
     const user = await User.find({ username: json.username });
     //utente non trovato
     if (user[0] == null) {
-      return { statusCode: 400, body: "user not found" };
+      return {
+        statusCode: 400,
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: "user not found",
+      };
     }
     //comparazione password dato dal client con quello del db
     if (await bcrypt.compare(json.password, user[0].password)) {
       const token = jwt.sign({ userID: user[0]._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
-      return { statusCode: 200, body: JSON.stringify(token) };
+      return {
+        statusCode: 200,
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: JSON.stringify({token}),
+      };
     } else {
-      return { statusCode: 401, body: "wrong password" };
+      return {
+        statusCode: 401,
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: "wrong password",
+      };
     }
   } catch (error) {
     return {
       statusCode: error.statusCode || 500,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: "error",
     };
   }

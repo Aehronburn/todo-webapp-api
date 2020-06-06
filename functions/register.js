@@ -16,8 +16,12 @@ module.exports.handler = async (event, context) => {
   try {
     //verificare che lo username scelto non esista già
     const existingUser = await User.find({ username: json.username });
-    if (existingUser) {
-      return { statusCode: 409, body: "username already exists" };
+    if (existingUser.length > 0) {
+      return {
+        statusCode: 409,
+        headers: { "Access-Control-Allow-Origin": "*" },
+        body: "username already exists",
+      };
     }
     //creazione hash della password + salt(10) per maggiore sicurezza
     const hashedPassword = await bcrypt.hash(json.password, 10);
@@ -30,11 +34,13 @@ module.exports.handler = async (event, context) => {
     await user.save();
     return {
       statusCode: 200,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify(user),
     };
   } catch (error) {
     return {
       statusCode: error.statusCode || 500,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: "error",
     };
   }

@@ -8,6 +8,7 @@ module.exports.handler = async (event, context) => {
   if (!authorize(event.headers.Authorization)) {
     return {
       statusCode: 401,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: "Unauthenticated",
     };
   }
@@ -27,11 +28,13 @@ module.exports.handler = async (event, context) => {
     await collection.save();
     return {
       statusCode: 200,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: "collection successfully created",
     };
   } catch (error) {
     return {
       statusCode: error.statusCode || 500,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: "error at creating new collection",
     };
   }

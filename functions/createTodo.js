@@ -8,6 +8,7 @@ module.exports.handler = async (event, context) => {
   if (!authorize(event.headers.Authorization)) {
     return {
       statusCode: 401,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: "Unauthenticated",
     };
   }
@@ -32,11 +33,13 @@ module.exports.handler = async (event, context) => {
     await todo.save();
     return {
       statusCode: 200,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: "todo created successfully",
     };
   } catch (error) {
     return {
       statusCode: 500,
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: "error at creating new todo",
     };
   }
