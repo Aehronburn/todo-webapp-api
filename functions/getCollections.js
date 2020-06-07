@@ -2,6 +2,7 @@
 
 const connectToDB = require("../lib/db");
 const authorize = require("../lib/authorize");
+const updateCount = require("../lib/updateCount");
 const Collection = require("../models/Collection");
 
 module.exports.handler = async (event, context) => {
@@ -18,7 +19,12 @@ module.exports.handler = async (event, context) => {
   //attesa connessione al db
   await connectToDB();
   try {
-    const collections = await Collection.find();
+    let collections = await Collection.find();
+    let updatedCollections = await Promise.all(
+      collections.map(async (collection) => {
+        await updateCount(collection);
+      })
+    );
     return {
       statusCode: 200,
       headers: { "Access-Control-Allow-Origin": "*" },

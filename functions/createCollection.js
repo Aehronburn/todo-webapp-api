@@ -21,7 +21,7 @@ module.exports.handler = async (event, context) => {
   const name = JSON.parse(event.body).name;
 
   try {
-    const collection = new Collection({
+    let collection = new Collection({
       name: name,
       count: 0,
     });
