@@ -42,6 +42,13 @@ functions:
           path: api/collections/{id}
           method: patch
           cors: true
+  deleteCollection:
+    handler: functions/deleteCollection.handler
+    events:
+      - http:
+          path: api/collections/{id}
+          method: delete
+          cors: true
   createTodo:
     handler: functions/createTodo.handler
     events:
